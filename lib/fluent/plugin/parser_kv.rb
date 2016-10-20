@@ -19,7 +19,16 @@ module Fluent
         record = {}
         text.split(@kv_delimiter).each do |kv|
           k, v = kv.split(@kv_char, 2)
-          record[k] = v
+          if record.has_key?(k)
+            if record[k].is_a?(Array)
+              record[k].push(v)
+            else
+              previous = record.delete(k)
+              record[k] = [previous, v]
+            end
+          else
+            record[k] = v
+          end
         end
 
         convert_field_type!(record) if @type_converters
