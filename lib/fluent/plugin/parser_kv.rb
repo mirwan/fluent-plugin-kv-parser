@@ -16,14 +16,9 @@ module Fluent
       end
 
       def parse(text)
-        re_badformat = /^\\"(.+)\\"$/
         record = {}
         text.split(@kv_delimiter).each do |kv|
           k, v = kv.split(@kv_char, 2)
-          m = re_badformat.match(v)
-          if m
-            v = m[1]
-          end
           if record.has_key?(k)
             if record[k].is_a?(Array)
               record[k].push(v)
