@@ -7,12 +7,14 @@ module Fluent
       config_param :kv_delimiter, :string, :default => '/[\t\s]+/'
       config_param :kv_char, :string, :default => '='
       config_param :time_key, :string, :default => 'time'
+      config_param :time_format, :string, :default => nil
 
       def configure(conf={})
         super
         if @kv_delimiter[0] == '/' and @kv_delimiter[-1] == '/'
           @kv_delimiter = Regexp.new(@kv_delimiter[1..-2])
         end
+	@time_parser = TimeParser.new(@time_format)
       end
 
       def parse(text)
@@ -35,10 +37,11 @@ module Fluent
         time = record.delete(@time_key)
         if time.nil?
           time = Engine.now
-        elsif time.respond_to?(:to_i)
-          time = time.to_i
         else
-          raise RuntimeError, "The #{@time_key}=#{time} is a bad time field"
+          time = @time_parser.parse(time)
+          if time.to_i < 0
+            raise RuntimeError, "The #{@time_key}=#{time} is a bad time field"
+          end
         end
 
         yield time, record
