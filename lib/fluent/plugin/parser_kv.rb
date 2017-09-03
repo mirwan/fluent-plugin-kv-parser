@@ -1,8 +1,8 @@
-module Fluent
+module Fluent::Plugin
   class TextParser
     class KVParser < Parser
-      include Configurable
-      include TypeConverter
+      include Fluent::Configurable
+      include Fluent::TypeConverter
 
       config_param :kv_delimiter, :string, :default => '/[\t\s]+/'
       config_param :kv_char, :string, :default => '='
@@ -46,6 +46,6 @@ module Fluent
       end
 
     end
-    register_template('kv', Proc.new { KVParser.new })
+    Fluent::Plugin.register_parser('kv', Proc.new { KVParser.new })
   end
 end
