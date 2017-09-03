@@ -25,7 +25,7 @@ module Fluent::Plugin
         convert_field_type!(record) if @type_converters
         time = record.delete(@time_key)
         if time.nil?
-          time = Engine.now
+          time = Fluent::Engine.now
         elsif time.respond_to?(:to_i)
           time = time.to_i
         else
