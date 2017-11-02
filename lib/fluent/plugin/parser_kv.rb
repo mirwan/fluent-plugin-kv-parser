@@ -1,8 +1,8 @@
-module Fluent
+module Fluent::Plugin
   class TextParser
     class KVParser < Parser
-      include Configurable
-      include TypeConverter
+      include Fluent::Configurable
+      include Fluent::TypeConverter
 
       config_param :kv_delimiter, :string, :default => '\t\s'
       config_param :kv_char, :string, :default => '='
@@ -30,7 +30,7 @@ module Fluent
         convert_field_type!(record) if @type_converters
         time = record.delete(@time_key)
         if time.nil?
-          time = Engine.now
+          time = Fluent::Engine.now
         elsif time.respond_to?(:to_i)
           time = time.to_i
         else
@@ -51,6 +51,6 @@ module Fluent
       end
 
     end
-    register_template('kv', Proc.new { KVParser.new })
+    Fluent::Plugin.register_parser('kv', Proc.new { KVParser.new })
   end
 end
