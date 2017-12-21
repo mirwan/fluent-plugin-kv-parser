@@ -1,7 +1,7 @@
 require 'fluent/plugin/parser'
 require 'fluent/time'
 module Fluent
-  class TextParser
+  module Plugin
     class KVParser < Parser
       Plugin.register_parser('kv', self)
       include Fluent::Configurable
