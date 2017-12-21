@@ -1,6 +1,9 @@
-module Fluent::Plugin
+require 'fluent/plugin/parser'
+require 'fluent/time'
+module Fluent
   class TextParser
     class KVParser < Parser
+      Plugin.register_parser('kv', self)
       include Fluent::Configurable
 
       config_param :kv_delimiter, :string, :default => '\t\s'
@@ -13,7 +16,7 @@ module Fluent::Plugin
         if @kv_delimiter[0] == '/' and @kv_delimiter[-1] == '/'
           @kv_delimiter = Regexp.new(@kv_delimiter[1..-2])
         end
-        @time_parser = TimeParser.new(@time_format)
+        @time_parser = time_parser_create(format: @time_format)
         @kv_regex_str = '("(?:(?:\\\.|[^"])*)"|(?:[^' + @kv_delimiter + ']*))\s*' + @kv_char + '\s*("(?:(?:\\\.|[^"])*)"|(?:[^' + @kv_delimiter + ']*))'
         @kv_regex = Regexp.new(@kv_regex_str)
       end
@@ -54,6 +57,5 @@ module Fluent::Plugin
       private
 
     end
-    Fluent::Plugin.register_parser('kv', Proc.new { KVParser.new })
   end
 end
