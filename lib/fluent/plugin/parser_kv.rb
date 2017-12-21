@@ -24,7 +24,16 @@ module Fluent::Plugin
         text.scan(@kv_regex) do | m |
           k = (m[0][0] == '"' and m[0][-1] == '"') ? m[0][1..-2] : m[0]
           v = (m[1][0] == '"' and m[1][-1] == '"') ? m[1][1..-2] : m[1]
-          record[k] = v
+          if record.has_key?(k)
+            if record[k].is_a?(Array)
+              record[k].push(v)
+            else
+              previous = record.delete(k)
+              record[k] = [previous, v]
+            end
+          else
+            record[k] = v
+          end
         end
 
         time = record.delete(@time_key)
