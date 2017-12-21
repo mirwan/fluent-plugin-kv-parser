@@ -3,6 +3,7 @@ require 'fluent/time'
 module Fluent
   class TextParser
     class KVParser < Parser
+      Plugin.register_parser('kv', self)
       include Fluent::Configurable
 
       config_param :kv_delimiter, :string, :default => '\t\s'
@@ -52,10 +53,6 @@ module Fluent
 
         yield time, record
       end
-
-      private
-
     end
-    Plugin.register_parser('kv', Proc.new { KVParser.new })
   end
 end
