@@ -14,7 +14,7 @@ module Fluent
       def configure(conf={})
         super
         if @kv_delimiter[0] == '/' and @kv_delimiter[-1] == '/'
-          @kv_delimiter = Regexp.new(@kv_delimiter[1..-2])
+          @kv_delimiter = @kv_delimiter[1..-2]
         end
         @time_parser = time_parser_create(format: @time_format)
         @kv_regex_str = '("(?:(?:\\\.|[^"])*)"|(?:[^' + @kv_delimiter + ']*))\s*' + @kv_char + '\s*("(?:(?:\\\.|[^"])*)"|(?:[^' + @kv_delimiter + ']*))'
