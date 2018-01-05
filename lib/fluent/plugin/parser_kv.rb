@@ -21,7 +21,16 @@ module Fluent
         record = {}
         text.split(@kv_delimiter).each do |kv|
           key, value = kv.split(@kv_char, 2)
-          record[key] = value
+          if record.has_key?(key)
+            if record[key].is_a?(Array)
+              record[key].push(value)
+            else
+              previous = record.delete(key)
+              record[key] = [previous, value]
+            end
+          else
+            record[key] = value
+          end
         end
 
         time = parse_time(record)
