@@ -21,7 +21,7 @@ module Fluent
         record = {}
         text.split(@kv_delimiter).each do |kv|
           key, value = kv.split(@kv_char, 2)
-          if record.has_key?(key)
+          if @reserve_data and record.has_key?(key)
             if record[key].is_a?(Array)
               record[key].push(value)
             else
